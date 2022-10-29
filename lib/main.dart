@@ -13,6 +13,9 @@ import 'components/ghost.dart';
 import 'components/player.dart';
 import 'components/slime.dart';
 
+import 'components/collectables.dart';
+import 'components/Life.dart';
+
 const spriteSize = 64.0;
 
 void main() async {
@@ -37,17 +40,26 @@ class WitchyGame extends FlameGame {
   final Eye _enemyEye = Eye();
   final Ghost _enemyGhost = Ghost();
 
+  // ignore: unused_field
+  final colllectables _enemycolllectables = colllectables();
+  // ignore: unused_field
+  final lifes _enemyLifes = lifes();
+  /*final CardsDisplay _enemyButton = const Button_Teste() as CardsDisplay;*/
   @override
   Future<void> onLoad() async {
     super.onLoad();
     await add(_background);
+    await add(_enemyLifes);
+
     await add(_cardDisplay);
     await add(_attackCard);
     await add(_lifeCard);
     await add(_magicCard);
     await add(_player);
+    await add(_enemycolllectables);
     await add(_enemySlime);
     await add(_enemyEye);
     await add(_enemyGhost);
+    //await add(_enemyButton);
   }
 }
