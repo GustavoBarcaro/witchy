@@ -1,10 +1,12 @@
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
+import 'package:witchy/main.dart';
 
-class AttackCard extends SpriteAnimationComponent with HasGameRef {
+class AttackCard extends SpriteAnimationComponent
+    with HasGameRef<WitchyGame>, Tappable {
   late final SpriteAnimation _idleAnimation;
 
-  final double _animationSpeed = .25;
+  final double _animationSpeed = .10;
 
   Future<void> _loadAnimations() async {
     final idleSpriteSheet = SpriteSheet.fromColumnsAndRows(
@@ -23,7 +25,11 @@ class AttackCard extends SpriteAnimationComponent with HasGameRef {
 
     await _loadAnimations().then((_) => {animation = _idleAnimation});
     position = Vector2(15.0, gameRef.size[1] - (gameRef.size[0] / 2.0) + 11.0);
-    size =
-        Vector2((gameRef.size[0] / 3.0) - 20.0, (gameRef.size[0] / 2.0) - 22.0);
+    size = Vector2(cardWidth, cardHeight);
+  }
+
+  @override
+  bool onTapDown(_) {
+    return true;
   }
 }

@@ -4,7 +4,7 @@ import 'package:flame/sprite.dart';
 class LifeCard extends SpriteAnimationComponent with HasGameRef {
   late final SpriteAnimation _idleAnimation;
 
-  final double _animationSpeed = .25;
+  final double _animationSpeed = .10;
 
   Future<void> _loadAnimations() async {
     final idleSpriteSheet = SpriteSheet.fromColumnsAndRows(
