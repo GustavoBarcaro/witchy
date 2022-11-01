@@ -41,7 +41,9 @@ flutter:
     - assets/images/cards/magic_card_spritesheet.png
 
     - assets/images/character/character_idle_spritesheet.png
-    - assets/images/character/character_attack_spritesheet.png
+    - assets/images/character/melee_attack_spritesheet.png
+    - assets/images/character/magic_attack_spritesheet.png
+    - assets/images/character/lightning_spritesheet.png
 
     - assets/images/enemies/red_slime_idle_spritesheet.png
     - assets/images/enemies/red_eye_idle_spritesheet.png

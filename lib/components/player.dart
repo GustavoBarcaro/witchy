@@ -3,11 +3,12 @@ import 'package:flame/sprite.dart';
 
 class Player extends SpriteAnimationComponent with HasGameRef {
   late final SpriteAnimation _idleAnimation;
+  late final SpriteAnimation _meleeAnimation;
+  late final SpriteAnimation _magicAnimation;
+
+  Player({super.priority});
 
   final double _animationSpeed = .20;
-
-  int _health = 12;
-  int get health => _health;
 
   Future<void> _loadAnimations() async {
     final idleSpriteSheet = SpriteSheet.fromColumnsAndRows(
@@ -16,8 +17,26 @@ class Player extends SpriteAnimationComponent with HasGameRef {
         columns: 4,
         rows: 1);
 
+    final meleeSpriteSheet = SpriteSheet.fromColumnsAndRows(
+        image:
+            await gameRef.images.load('character/melee_attack_spritesheet.png'),
+        columns: 4,
+        rows: 1);
+
+    final magicSpriteSheet = SpriteSheet.fromColumnsAndRows(
+        image:
+            await gameRef.images.load('character/magic_attack_spritesheet.png'),
+        columns: 8,
+        rows: 1);
+
     _idleAnimation =
         idleSpriteSheet.createAnimation(row: 0, stepTime: _animationSpeed);
+
+    _meleeAnimation = meleeSpriteSheet.createAnimation(
+        row: 0, stepTime: _animationSpeed, loop: false);
+
+    _magicAnimation = magicSpriteSheet.createAnimation(
+        row: 0, stepTime: _animationSpeed, loop: false);
   }
 
   @override
@@ -29,7 +48,17 @@ class Player extends SpriteAnimationComponent with HasGameRef {
     size = Vector2.all(128.0);
   }
 
-  void takeDamage(int damage) {
-    _health -= damage;
+  void playIdleAnimation() {
+    animation = _idleAnimation;
+  }
+
+  void playMeleeAnimation() {
+    _meleeAnimation.reset();
+    animation = _meleeAnimation;
+  }
+
+  void playMagicAnimation() {
+    _magicAnimation.reset();
+    animation = _magicAnimation;
   }
 }

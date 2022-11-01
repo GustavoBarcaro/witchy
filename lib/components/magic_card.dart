@@ -1,7 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
+import 'package:witchy/main.dart';
 
-class MagicCard extends SpriteAnimationComponent with HasGameRef {
+class MagicCard extends SpriteAnimationComponent
+    with HasGameRef<WitchyGame>, Tappable {
   late final SpriteAnimation _idleAnimation;
 
   final double _animationSpeed = .10;
@@ -25,5 +27,11 @@ class MagicCard extends SpriteAnimationComponent with HasGameRef {
     position = Vector2(gameRef.size[0] - (gameRef.size[0] / 3.0) + 5,
         gameRef.size[1] - (gameRef.size[0] / 2.0) + 11.0);
     size = Vector2(cardWidth, cardHeight);
+  }
+
+  @override
+  bool onTapDown(info) {
+    gameRef.magicAttack();
+    return false;
   }
 }

@@ -29,7 +29,8 @@ class AttackCard extends SpriteAnimationComponent
   }
 
   @override
-  bool onTapDown(_) {
-    return true;
+  bool onTapDown(info) {
+    gameRef.physicAttack();
+    return false;
   }
 }

@@ -1,16 +1,17 @@
 import 'dart:math';
 
+import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:witchy/components/lightning_attack.dart';
 import 'package:witchy/components/main_menu.dart';
 
 import 'package:witchy/model/player_data.dart';
 
-import 'components/command.dart';
 import 'components/hud.dart';
 import 'components/attack_card.dart';
 import 'components/life_card.dart';
@@ -31,7 +32,7 @@ void main() async {
   Flame.device.fullScreen();
   Flame.device.setPortraitUpOnly();
 
-  final _game = WitchyGame();
+  final game = WitchyGame();
 
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -41,7 +42,7 @@ void main() async {
         fit: StackFit.expand,
         children: [
           GameWidget<WitchyGame>(
-            game: kDebugMode ? WitchyGame() : _game,
+            game: kDebugMode ? WitchyGame() : game,
             overlayBuilderMap: {
               MainMenu.id: ((context, game) => MainMenu(gameRef: game))
             },
@@ -83,16 +84,15 @@ class WitchyGame extends FlameGame with HasTappables {
 
   final Player _player = Player();
 
-  final Slime _enemySlime = Slime();
-  final Eye _enemyEye = Eye();
-  final Ghost _enemyGhost = Ghost();
+  // final Slime _enemySlime = Slime();
+  // final Eye _enemyEye = Eye();
+  // final Ghost _enemyGhost = Ghost();
 
-  final _random = Random();
-
-  final _commandList = List<Command>.empty(growable: true);
-  final _addLaterCommandList = List<Command>.empty(growable: true);
+  final List enemies = [Slime(), Eye(), Ghost()];
 
   final playerData = PlayerData();
+
+  final random = Random();
 
   bool attack = false;
 
@@ -106,25 +106,53 @@ class WitchyGame extends FlameGame with HasTappables {
     await add(_lifeCard);
     await add(_magicCard);
     await add(_player);
-    await add(_enemySlime);
-    await add(_enemyEye);
-    await add(_enemyGhost);
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-
-    _commandList.forEach((command) {
-      // components.forEach()
+    enemies.forEach((element) async {
+      await add(element);
     });
-
-    _commandList.clear();
-    _commandList.addAll(_addLaterCommandList);
-    _addLaterCommandList.clear();
+    //   await add(_enemySlime);
+    //   await add(_enemyEye);
+    //   await add(_enemyGhost);
   }
 
-  void addCommand(Command command) {
-    _addLaterCommandList.add(command);
+  // @override
+  // void update(double dt) {
+  //   super.update(dt);
+  // }
+
+  SpriteAnimationComponent getRandomEnemy() {
+    return enemies[random.nextInt(3)];
+  }
+
+  void physicAttack() async {
+    final SpriteAnimationComponent enemy = getRandomEnemy();
+    final originalPosition = Vector2(16.0, size[1] / 2.0 - 96.0);
+
+    _player.size = Vector2.all(172);
+    _player.priority = 1;
+    _player.anchor = Anchor.center;
+    _player.position =
+        Vector2(enemy.position.x - enemy.size.x / 2, enemy.position.y);
+    _player.playMeleeAnimation();
+    await Future.delayed(const Duration(seconds: 1), () {
+      _player.size = Vector2.all(128);
+      _player.position = originalPosition;
+      _player.anchor = Anchor.topLeft;
+      _player.playIdleAnimation();
+    });
+  }
+
+  void magicAttack() async {
+    final SpriteAnimationComponent enemy = getRandomEnemy();
+    _player.size = Vector2.all(160);
+    _player.playMagicAnimation();
+    await Future.delayed(const Duration(milliseconds: 750), () {
+      add(LightningAttack(
+          position:
+              Vector2(enemy.position.x, enemy.position.y - enemy.size.y)));
+    });
+    await Future.delayed(const Duration(milliseconds: 750), () {
+      _player.size = Vector2.all(128);
+      _player.playIdleAnimation();
+    });
   }
 }
