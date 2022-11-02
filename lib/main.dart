@@ -23,6 +23,9 @@ import 'components/ghost.dart';
 import 'components/player.dart';
 import 'components/slime.dart';
 
+// import 'components/collectables.dart';
+// import 'components/life.dart';
+
 const spriteSize = 64.0;
 
 void main() async {
@@ -83,7 +86,9 @@ class WitchyGame extends FlameGame with HasTappables {
   final MagicCard _magicCard = MagicCard();
 
   final Player _player = Player();
-
+  // final Hud _hud = Hud();
+  // final colllectables _enemycolllectables = colllectables();
+  // final lifes _enemyLifes = lifes();
   // final Slime _enemySlime = Slime();
   // final Eye _enemyEye = Eye();
   // final Ghost _enemyGhost = Ghost();
@@ -101,11 +106,14 @@ class WitchyGame extends FlameGame with HasTappables {
     super.onLoad();
     await add(Hud(priority: 1));
     await add(_background);
+    // await add(_enemyLifes);
     await add(_cardDisplay);
     await add(_attackCard);
     await add(_lifeCard);
     await add(_magicCard);
     await add(_player);
+    // await add(_hud);
+    // await add(_enemycolllectables);
     enemies.forEach((element) async {
       await add(element);
     });
