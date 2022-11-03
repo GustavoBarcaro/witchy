@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
+import 'package:witchy/game/lightning_attack.dart';
 
 class Player extends SpriteAnimationComponent with HasGameRef {
   late final SpriteAnimation _idleAnimation;
@@ -60,5 +61,35 @@ class Player extends SpriteAnimationComponent with HasGameRef {
   void playMagicAnimation() {
     _magicAnimation.reset();
     animation = _magicAnimation;
+  }
+
+  void meleeAttack(SpriteAnimationComponent enemy) async {
+    final originalPosition = Vector2(16.0, gameRef.size[1] / 2.0 - 96.0);
+
+    size = Vector2.all(172);
+    priority = 1;
+    anchor = Anchor.center;
+    position = Vector2(enemy.position.x - enemy.size.x / 2, enemy.position.y);
+    playMeleeAnimation();
+    await Future.delayed(const Duration(seconds: 1), () {
+      size = Vector2.all(128);
+      position = originalPosition;
+      anchor = Anchor.topLeft;
+      playIdleAnimation();
+    });
+  }
+
+  void magicAttack(SpriteAnimationComponent enemy) async {
+    size = Vector2.all(160);
+    playMagicAnimation();
+    await Future.delayed(const Duration(milliseconds: 750), () {
+      gameRef.add(LightningAttack(
+          position:
+              Vector2(enemy.position.x, enemy.position.y - enemy.size.y)));
+    });
+    await Future.delayed(const Duration(milliseconds: 750), () {
+      size = Vector2.all(128);
+      playIdleAnimation();
+    });
   }
 }

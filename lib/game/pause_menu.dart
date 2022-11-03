@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:witchy/components/main_menu.dart';
-import 'package:witchy/main.dart';
+import 'package:witchy/game.dart';
+import 'package:witchy/game/screens/main_menu.dart';
 
 class PauseMenu extends StatelessWidget {
   static const id = 'PauseMenu';

@@ -1,8 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
-import 'package:witchy/main.dart';
+import 'package:witchy/game.dart';
 
-class MagicCard extends SpriteAnimationComponent
+class AttackCard extends SpriteAnimationComponent
     with HasGameRef<WitchyGame>, Tappable {
   late final SpriteAnimation _idleAnimation;
 
@@ -10,8 +10,8 @@ class MagicCard extends SpriteAnimationComponent
 
   Future<void> _loadAnimations() async {
     final idleSpriteSheet = SpriteSheet.fromColumnsAndRows(
-        image: await gameRef.images.load('cards/magic_card_spritesheet.png'),
-        columns: 12,
+        image: await gameRef.images.load('cards/attack_card_spritesheet.png'),
+        columns: 11,
         rows: 1);
 
     _idleAnimation = idleSpriteSheet.createAnimation(
@@ -24,14 +24,13 @@ class MagicCard extends SpriteAnimationComponent
     final double cardHeight = (gameRef.size[0] / 2.0) - 22.0;
 
     await _loadAnimations().then((_) => {animation = _idleAnimation});
-    position = Vector2(gameRef.size[0] - (gameRef.size[0] / 3.0) + 5,
-        gameRef.size[1] - (gameRef.size[0] / 2.0) + 11.0);
+    position = Vector2(15.0, gameRef.size[1] - (gameRef.size[0] / 2.0) + 11.0);
     size = Vector2(cardWidth, cardHeight);
   }
 
   @override
   bool onTapDown(info) {
-    gameRef.magicAttack();
+    gameRef.physicAttack();
     return false;
   }
 }

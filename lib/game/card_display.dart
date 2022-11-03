@@ -1,6 +1,8 @@
 import 'package:flame/components.dart';
 
 class CardsDisplay extends SpriteComponent with HasGameRef {
+  CardsDisplay({super.priority});
+
   @override
   Future<void> onLoad() async {
     super.onLoad();

@@ -1,5 +1,7 @@
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:flutter/material.dart';
 import 'package:flame/components.dart';
-import 'package:witchy/main.dart';
+import 'package:witchy/game.dart';
 
 class Hud extends Component with HasGameRef<WitchyGame> {
   Hud({super.children, super.priority, positionType = PositionType.viewport});
@@ -16,7 +18,33 @@ class Hud extends Component with HasGameRef<WitchyGame> {
         text: '0',
         position: Vector2(gameRef.size.x - 10, 10),
         anchor: Anchor.topRight);
+    //   text: '0',
+    //   textRenderer: TextPaint(
+    //       style: GoogleFonts.getFont(
+    //     'Press Start 2P',
+    //     fontSize: 32,
+    //     color: Colors.black,
+    //   )),
+    //   position: Vector2(gameRef.size.x - 32, 32),
+    //   anchor: Anchor.topRight,
+    // );
     add(coinTextComponent);
+
+    // final actionsButtonComponent = SpriteButtonComponent(
+    //     button: await gameRef.loadSprite('buttons/actions_button_pressed.png'),
+    //     size: Vector2(gameRef.size.x / 2, 50),
+    //     position: Vector2(0, gameRef.size.y - (gameRef.size.x / 2) - 50),
+    //     onPressed: () async {});
+    // add(actionsButtonComponent);
+
+    // final upgradesButtonComponent = SpriteButtonComponent(
+    //     button:
+    //         await gameRef.loadSprite('buttons/upgrades_button_unpressed.png'),
+    //     size: Vector2(gameRef.size.x / 2, 50),
+    //     position: Vector2(
+    //         gameRef.size.x / 2, gameRef.size.y - (gameRef.size.x / 2) - 50),
+    //     onPressed: () {});
+    // add(upgradesButtonComponent);
 
     // final cardsHeight = gameRef.size.x / 2;
 
@@ -26,16 +54,14 @@ class Hud extends Component with HasGameRef<WitchyGame> {
     //     position: Vector2(0, gameRef.size.y - cardsHeight));
     // add(cardsDisplayComponent);
 
-    final coin = gameRef.size.y / 2;
     final coincollectables = SpriteComponent(
-        sprite: await gameRef.loadSprite('collectables/coin.png'),
-        size: Vector2(64, 64),
-        position: Vector2(gameRef.size.x, 10),
-        anchor: Anchor.topRight //( gameRef.size.y -10,10 ),//- coin
-
-        );
+      sprite: await gameRef.loadSprite('collectables/coin.png'),
+      size: Vector2(64, 64),
+      position: Vector2(gameRef.size.x, 10),
+      anchor: Anchor.topRight,
+    );
     add(coincollectables);
-    // final lifes = gameRef.size.x / 2 + 50;
+
     final lifeHeart1 = SpriteComponent(
       sprite: await gameRef.loadSprite('lifes/heart.png'),
       size: Vector2(64, 64),
@@ -43,7 +69,7 @@ class Hud extends Component with HasGameRef<WitchyGame> {
       anchor: Anchor.topLeft,
     );
     add(lifeHeart1);
-    // final life2 = gameRef.size.x / 2 + 50;
+
     final lifeHeart2 = SpriteComponent(
         sprite: await gameRef.loadSprite('lifes/heart.png'),
         size: Vector2(64, 64),
@@ -51,7 +77,7 @@ class Hud extends Component with HasGameRef<WitchyGame> {
         anchor: Anchor.topLeft);
 
     add(lifeHeart2);
-    // final life3 = gameRef.size.x / 2 + 50;
+
     final lifeHeart3 = SpriteComponent(
         sprite: await gameRef.loadSprite('lifes/heart.png'),
         size: Vector2(64, 64),
