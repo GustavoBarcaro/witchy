@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'dart:math';
 
 import 'package:flame/components.dart';
@@ -13,12 +15,10 @@ import 'package:witchy/game/actors/slime.dart';
 import 'package:witchy/game/overlays/hud.dart';
 
 import 'package:witchy/game/model/player_data.dart';
+import 'package:witchy/game/model/game_data.dart';
 
-import 'package:witchy/game/attack_card.dart';
 import 'package:witchy/game/background.dart';
 import 'package:witchy/game/card_display.dart';
-import 'package:witchy/game/life_card.dart';
-import 'package:witchy/game/magic_card.dart';
 
 class WitchyGame extends FlameGame with HasTappables {
   final Background _background = Background();
@@ -27,9 +27,9 @@ class WitchyGame extends FlameGame with HasTappables {
   final ActionButton _actionButton = ActionButton();
   final UpgradeButton _upgradeButton = UpgradeButton();
 
-  final AttackCard _attackCard = AttackCard();
-  final LifeCard _lifeCard = LifeCard();
-  final MagicCard _magicCard = MagicCard();
+  // final AttackCard _attackCard = AttackCard();
+  // final LifeCard _lifeCard = LifeCard();
+  // final MagicCard _magicCard = MagicCard();
 
   final Player _player = Player();
   final Hud _hud = Hud(priority: 1);
@@ -37,10 +37,11 @@ class WitchyGame extends FlameGame with HasTappables {
   final List enemies = [Slime(), Eye(), Ghost()];
 
   final playerData = PlayerData();
+  final gameData = GameData();
 
   final random = Random();
 
-  bool attack = false;
+  bool actionsActive = true;
 
   @override
   Future<void> onLoad() async {
@@ -48,17 +49,10 @@ class WitchyGame extends FlameGame with HasTappables {
     await add(_hud);
     await add(_background);
     await add(_cardDisplay);
-    // await add(_upgradeDisplay);
-    await add(_attackCard);
-    await add(_lifeCard);
-    await add(_magicCard);
     await add(_player);
-    // ignore: avoid_function_literals_in_foreach_calls
-    enemies.forEach((element) async {
-      await add(element);
-    });
     await add(_actionButton);
     await add(_upgradeButton);
+    startGame();
   }
 
   // @override
@@ -66,8 +60,21 @@ class WitchyGame extends FlameGame with HasTappables {
   //   super.update(dt);
   // }
 
+  void startGame() {
+    removeAll(gameData.enemies.value);
+    gameData.enemies.value = gameData.generateRandomEnemies();
+    gameData.enemies.value.forEach((element) async {
+      await add(element);
+    });
+    removeAll(gameData.cards.value);
+    gameData.cards.value = gameData.generateRandomCards();
+    gameData.cards.value.forEach((element) async {
+      await add(element);
+    });
+  }
+
   SpriteAnimationComponent getRandomEnemy() {
-    return enemies[random.nextInt(3)];
+    return gameData.enemies.value[random.nextInt(3)];
   }
 
   void physicAttack() async {
@@ -81,15 +88,33 @@ class WitchyGame extends FlameGame with HasTappables {
   }
 
   void activeActions() {
-    _actionButton.selectThis();
-    _upgradeButton.unselectThis();
-    remove(_upgradeDisplay);
+    if (actionsActive == false) {
+      _actionButton.selectThis();
+      _upgradeButton.unselectThis();
+      remove(_upgradeDisplay);
+      add(_cardDisplay);
+      gameData.cards.value.forEach((element) async {
+        await add(element);
+      });
+      actionsActive = true;
+    }
   }
 
   void activeUpgrades() {
-    _upgradeButton.selectThis();
-    _actionButton.unselectThis();
-    add(_upgradeDisplay);
+    if (actionsActive == true) {
+      _upgradeButton.selectThis();
+      _actionButton.unselectThis();
+      add(_upgradeDisplay);
+      remove(_cardDisplay);
+      removeAll(gameData.cards.value);
+      actionsActive = false;
+    }
+  }
+
+  void updateCards(row) async {
+    remove(gameData.cards.value[row]);
+    gameData.replaceCard(row);
+    await add(gameData.cards.value[row]);
   }
 }
 
