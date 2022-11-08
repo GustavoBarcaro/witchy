@@ -53,6 +53,10 @@ flutter:
     - assets/images/enemies/red_eye_idle_spritesheet.png
     - assets/images/enemies/red_ghost_idle_spritesheet.png
 
+    - assets/images/enemies/red_slime_faint_spritesheet.png
+    - assets/images/enemies/red_eye_faint_spritesheet.png
+    - assets/images/enemies/red_ghost_faint_spritesheet.png
+
     - assets/images/lifes/heart.png
 
     - assets/images/screen/scenario.png

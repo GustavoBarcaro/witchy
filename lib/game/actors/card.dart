@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:witchy/game.dart';
@@ -68,21 +70,27 @@ class Card extends SpriteAnimationComponent
 
   @override
   bool onTapDown(info) {
-    if (gameRef.actionsActive == true) {
-      switch (type) {
-        case 0:
-          gameRef.physicAttack();
-          break;
-        case 1:
-          gameRef.magicAttack();
-          break;
-        case 2:
-          // gameRef.startGame();
-          break;
-        default:
-          break;
+    int fainted = 0;
+    gameRef.gameData.enemies.value.forEach((element) {
+      if (element.health <= 0) fainted++;
+    });
+    if (fainted != 3) {
+      if (gameRef.actionsActive == true) {
+        switch (type) {
+          case 0:
+            gameRef.physicAttack();
+            break;
+          case 1:
+            gameRef.magicAttack();
+            break;
+          case 2:
+            // gameRef.startGame();
+            break;
+          default:
+            break;
+        }
+        gameRef.updateCards(rowNumber);
       }
-      gameRef.updateCards(rowNumber);
     }
     return false;
   }

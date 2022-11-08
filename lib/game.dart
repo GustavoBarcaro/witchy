@@ -7,10 +7,8 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
-import 'package:witchy/game/actors/eye.dart';
-import 'package:witchy/game/actors/ghost.dart';
+import 'package:witchy/game/actors/enemy.dart';
 import 'package:witchy/game/actors/player.dart';
-import 'package:witchy/game/actors/slime.dart';
 
 import 'package:witchy/game/overlays/hud.dart';
 
@@ -34,7 +32,7 @@ class WitchyGame extends FlameGame with HasTappables {
   final Player _player = Player();
   final Hud _hud = Hud(priority: 1);
 
-  final List enemies = [Slime(), Eye(), Ghost()];
+  // final List enemies = [Slime(), Eye(), Ghost()];
 
   final playerData = PlayerData();
   final gameData = GameData();
@@ -73,18 +71,29 @@ class WitchyGame extends FlameGame with HasTappables {
     });
   }
 
-  SpriteAnimationComponent getRandomEnemy() {
-    return gameData.enemies.value[random.nextInt(3)];
+  Enemy getRandomEnemy() {
+    Enemy enemy = gameData.enemies.value[random.nextInt(3)];
+    if (enemy.health <= 0) {
+      return getRandomEnemy();
+    } else {
+      return enemy;
+    }
   }
 
   void physicAttack() async {
-    final SpriteAnimationComponent enemy = getRandomEnemy();
-    _player.meleeAttack(enemy);
+    final Enemy enemy = getRandomEnemy();
+    int minDamage = playerData.meleeMinDamage.value;
+    int maxDamage = playerData.meleeMaxDamage.value;
+    int damage = minDamage + random.nextInt(maxDamage - minDamage);
+    _player.meleeAttack(enemy, damage);
   }
 
   void magicAttack() async {
-    final SpriteAnimationComponent enemy = getRandomEnemy();
-    _player.magicAttack(enemy);
+    final Enemy enemy = getRandomEnemy();
+    int minDamage = playerData.magicMinDamage.value;
+    int maxDamage = playerData.magicMaxDamage.value;
+    int damage = minDamage + random.nextInt(maxDamage - minDamage);
+    _player.magicAttack(enemy, damage);
   }
 
   void activeActions() {
