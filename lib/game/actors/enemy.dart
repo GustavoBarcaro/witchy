@@ -14,8 +14,9 @@ class Enemy extends SpriteAnimationComponent
 
   late final List<SpriteAnimation> _idleAnimations;
   late final List<SpriteAnimation> _faintAnimations;
+  late final List<SpriteAnimation> _attackAnimations;
 
-  final double _animationSpeed = .10;
+  final double _animationSpeed = .20;
 
   int health = 10;
 
@@ -56,6 +57,18 @@ class Enemy extends SpriteAnimationComponent
         columns: 4,
         rows: 1);
 
+    final attackSlimeSpriteSheet = SpriteSheet.fromColumnsAndRows(
+        image: await gameRef.images
+            .load('enemies/red_slime_attack_spritesheet.png'),
+        columns: 8,
+        rows: 1);
+
+    final attackGhostSpriteSheet = SpriteSheet.fromColumnsAndRows(
+        image: await gameRef.images
+            .load('enemies/red_ghost_attack_spritesheet.png'),
+        columns: 8,
+        rows: 1);
+
     _idleAnimations = [
       idleSlimeSpriteSheet.createAnimation(row: 0, stepTime: _animationSpeed),
       idleEyeSpriteSheet.createAnimation(row: 0, stepTime: _animationSpeed),
@@ -69,6 +82,15 @@ class Enemy extends SpriteAnimationComponent
           row: 0, stepTime: _animationSpeed, loop: false),
       faintGhostSpriteSheet.createAnimation(
           row: 0, stepTime: _animationSpeed, loop: false),
+    ];
+
+    _attackAnimations = [
+      attackSlimeSpriteSheet.createAnimation(
+          row: 0, stepTime: _animationSpeed / 2, loop: false),
+      idleEyeSpriteSheet.createAnimation(
+          row: 0, stepTime: _animationSpeed / 2, loop: false),
+      attackGhostSpriteSheet.createAnimation(
+          row: 0, stepTime: _animationSpeed / 2, loop: false),
     ];
   }
 
@@ -110,8 +132,29 @@ class Enemy extends SpriteAnimationComponent
   @override
   void render(Canvas canvas) {
     canvas.drawRect(
-        Rect.fromLTWH(size.x - 64, size.y - 74, health.toDouble() * 6.4, 10),
+        Rect.fromLTWH(size.x - 64, size.y + 10, health.toDouble() * 6.4, 10),
         Paint()..color = Colors.lightBlueAccent);
     super.render(canvas);
+  }
+
+  @override
+  void onRemove() {
+    gameRef.playerData.coins.value += 5;
+    super.onRemove();
+  }
+
+  void playAttackAnimation() {
+    _attackAnimations[type].reset();
+    animation = _attackAnimations[type];
+  }
+
+  void attackPlayer() async {
+    playAttackAnimation();
+    await Future.delayed(const Duration(milliseconds: 800), () {
+      gameRef.playerData.health.value -= 1;
+      gameRef.playerTurn = true;
+      gameRef.enemyTurn = false;
+      animation = _idleAnimations[type];
+    });
   }
 }

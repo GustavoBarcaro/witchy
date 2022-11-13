@@ -33,42 +33,49 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/
+    - assets/images/buttons/
+    - assets/images/cards/
+    - assets/images/character/
+    - assets/images/collectables/
+    - assets/images/enemies/
+    - assets/images/icons/
+    - assets/images/lifes/
+    - assets/images/screen/
 
-    - assets/images/cards/attack_card_spritesheet.png
-    - assets/images/cards/life_card_spritesheet.png
-    - assets/images/cards/magic_card_spritesheet.png
+    # - assets/images/cards/attack_card_spritesheet.png
+    # - assets/images/cards/life_card_spritesheet.png
+    # - assets/images/cards/magic_card_spritesheet.png
 
-    - assets/images/buttons/actions_button_pressed.png
-    - assets/images/buttons/actions_button_unpressed.png
-    - assets/images/buttons/upgrades_button_pressed.png
-    - assets/images/buttons/upgrades_button_unpressed.png
+    # - assets/images/buttons/actions_button_pressed.png
+    # - assets/images/buttons/actions_button_unpressed.png
+    # - assets/images/buttons/upgrades_button_pressed.png
+    # - assets/images/buttons/upgrades_button_unpressed.png
 
-    - assets/images/character/character_idle_spritesheet.png
-    - assets/images/character/melee_attack_spritesheet.png
-    - assets/images/character/magic_attack_spritesheet.png
-    - assets/images/character/lightning_spritesheet.png
+    # - assets/images/character/character_idle_spritesheet.png
+    # - assets/images/character/melee_attack_spritesheet.png
+    # - assets/images/character/magic_attack_spritesheet.png
+    # - assets/images/character/lightning_spritesheet.png
 
-    - assets/images/enemies/red_slime_idle_spritesheet.png
-    - assets/images/enemies/red_eye_idle_spritesheet.png
-    - assets/images/enemies/red_ghost_idle_spritesheet.png
+    # - assets/images/enemies/red_slime_idle_spritesheet.png
+    # - assets/images/enemies/red_eye_idle_spritesheet.png
+    # - assets/images/enemies/red_ghost_idle_spritesheet.png
 
-    - assets/images/enemies/red_slime_faint_spritesheet.png
-    - assets/images/enemies/red_eye_faint_spritesheet.png
-    - assets/images/enemies/red_ghost_faint_spritesheet.png
+    # - assets/images/enemies/red_slime_faint_spritesheet.png
+    # - assets/images/enemies/red_eye_faint_spritesheet.png
+    # - assets/images/enemies/red_ghost_faint_spritesheet.png
 
-    - assets/images/lifes/heart.png
+    # - assets/images/lifes/heart.png
 
-    - assets/images/screen/scenario.png
-    - assets/images/screen/cards_display.png
-    - assets/images/collectables/coin.png
+    # - assets/images/screen/scenario.png
+    # - assets/images/screen/cards_display.png
+    # - assets/images/collectables/coin.png
 
     #Lifes Adicionadas
-    - assets/images/lifes/heart.png
-    - assets/images/lifes/empty_heart.png
-    - assets/images/lifes/half_heart.png
-    - assets/images/lifes/quarter_heart.png
-    - assets/images/lifes/three_quarter_heart.png
+    # - assets/images/lifes/heart.png
+    # - assets/images/lifes/empty_heart.png
+    # - assets/images/lifes/half_heart.png
+    # - assets/images/lifes/quarter_heart.png
+    # - assets/images/lifes/three_quarter_heart.png
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

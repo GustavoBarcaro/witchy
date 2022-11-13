@@ -2,6 +2,7 @@
 
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
+
 import 'package:witchy/game.dart';
 
 class Card extends SpriteAnimationComponent
@@ -74,24 +75,25 @@ class Card extends SpriteAnimationComponent
     gameRef.gameData.enemies.value.forEach((element) {
       if (element.health <= 0) fainted++;
     });
-    if (fainted != 3) {
-      if (gameRef.actionsActive == true) {
-        switch (type) {
-          case 0:
-            gameRef.physicAttack();
-            break;
-          case 1:
-            gameRef.magicAttack();
-            break;
-          case 2:
-            // gameRef.startGame();
-            break;
-          default:
-            break;
-        }
-        gameRef.updateCards(rowNumber);
-      }
+    if (fainted == 3) return false;
+    if (gameRef.playerTurn == false || gameRef.enemyTurn == true) {
+      return false;
     }
+
+    switch (type) {
+      case 0:
+        gameRef.physicAttack();
+        break;
+      case 1:
+        gameRef.magicAttack();
+        break;
+      case 2:
+        gameRef.healing();
+        break;
+      default:
+        break;
+    }
+    gameRef.updateCards(rowNumber);
     return false;
   }
 }

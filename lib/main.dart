@@ -1,6 +1,5 @@
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +27,7 @@ void main() async {
         children: [
           SafeArea(
             child: GameWidget<WitchyGame>(
-              game: kDebugMode ? WitchyGame() : game,
+              game: game,
               overlayBuilderMap: {
                 MainMenu.id: ((context, game) => MainMenu(gameRef: game))
               },

@@ -1,10 +1,10 @@
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
+import 'package:witchy/game.dart';
 import 'package:witchy/game/actors/enemy.dart';
-import 'package:witchy/game/lightning_attack.dart';
-import 'package:witchy/game/model/player_data.dart';
+import 'package:witchy/game/components/lightning_attack.dart';
 
-class Player extends SpriteAnimationComponent with HasGameRef {
+class Player extends SpriteAnimationComponent with HasGameRef<WitchyGame> {
   late final SpriteAnimation _idleAnimation;
   late final SpriteAnimation _meleeAnimation;
   late final SpriteAnimation _magicAnimation;
@@ -36,10 +36,10 @@ class Player extends SpriteAnimationComponent with HasGameRef {
         idleSpriteSheet.createAnimation(row: 0, stepTime: _animationSpeed);
 
     _meleeAnimation = meleeSpriteSheet.createAnimation(
-        row: 0, stepTime: _animationSpeed, loop: false);
+        row: 0, stepTime: _animationSpeed / 2, loop: false);
 
     _magicAnimation = magicSpriteSheet.createAnimation(
-        row: 0, stepTime: _animationSpeed, loop: false);
+        row: 0, stepTime: _animationSpeed / 2, loop: false);
   }
 
   @override
@@ -73,27 +73,29 @@ class Player extends SpriteAnimationComponent with HasGameRef {
     anchor = Anchor.center;
     position = Vector2(enemy.position.x - enemy.size.x / 2, enemy.position.y);
     playMeleeAnimation();
-    await Future.delayed(const Duration(seconds: 1), () {
+    await Future.delayed(const Duration(milliseconds: 800), () {
       size = Vector2.all(128);
       position = originalPosition;
       anchor = Anchor.topLeft;
       playIdleAnimation();
       enemy.health -= damage;
+      gameRef.playerTurn = false;
     });
   }
 
   void magicAttack(Enemy enemy, int damage) async {
     size = Vector2.all(160);
     playMagicAnimation();
-    await Future.delayed(const Duration(milliseconds: 750), () {
+    await Future.delayed(const Duration(milliseconds: 800), () {
       gameRef.add(LightningAttack(
           position:
               Vector2(enemy.position.x, enemy.position.y - enemy.size.y)));
     });
-    await Future.delayed(const Duration(milliseconds: 750), () {
+    await Future.delayed(const Duration(milliseconds: 800), () {
       size = Vector2.all(128);
       playIdleAnimation();
       enemy.health -= damage;
+      gameRef.playerTurn = false;
     });
   }
 }

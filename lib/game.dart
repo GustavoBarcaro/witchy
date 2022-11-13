@@ -3,76 +3,83 @@
 import 'dart:math';
 
 import 'package:flame/components.dart';
-import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:witchy/game/actors/enemy.dart';
 import 'package:witchy/game/actors/player.dart';
 
-import 'package:witchy/game/overlays/hud.dart';
-
 import 'package:witchy/game/model/player_data.dart';
 import 'package:witchy/game/model/game_data.dart';
 
-import 'package:witchy/game/background.dart';
-import 'package:witchy/game/card_display.dart';
+import 'package:witchy/game/screens/background.dart';
+import 'package:witchy/game/screens/card_display.dart';
 
 class WitchyGame extends FlameGame with HasTappables {
+  static const id = 'MainGame';
+
   final Background _background = Background();
   final CardsDisplay _cardDisplay = CardsDisplay();
-  final UpgradesDisplay _upgradeDisplay = UpgradesDisplay();
-  final ActionButton _actionButton = ActionButton();
-  final UpgradeButton _upgradeButton = UpgradeButton();
 
-  // final AttackCard _attackCard = AttackCard();
-  // final LifeCard _lifeCard = LifeCard();
-  // final MagicCard _magicCard = MagicCard();
+  final CoinIcon _coinIcon = CoinIcon();
+  final CoinLabel _coinLabel = CoinLabel();
 
   final Player _player = Player();
-  final Hud _hud = Hud(priority: 1);
-
-  // final List enemies = [Slime(), Eye(), Ghost()];
 
   final playerData = PlayerData();
   final gameData = GameData();
 
-  final random = Random();
-
-  bool actionsActive = true;
+  bool playerTurn = true;
+  bool enemyTurn = false;
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    await add(_hud);
     await add(_background);
     await add(_cardDisplay);
     await add(_player);
-    await add(_actionButton);
-    await add(_upgradeButton);
+    await add(_coinIcon);
+    await add(_coinLabel);
     startGame();
+
+    playerData.health.addListener(() {
+      updateHealthContainer(playerData.health.value);
+    });
   }
 
-  // @override
-  // void update(double dt) {
-  //   super.update(dt);
-  // }
+  @override
+  void update(double dt) {
+    int fainted = 0;
+    gameData.enemies.value.forEach((element) {
+      if (element.health <= 0) fainted++;
+    });
+    if (fainted != 3) {
+      if (playerTurn == false && enemyTurn == false) {
+        enemyTurn = true;
+        enemyAttack();
+      }
+    }
+    super.update(dt);
+  }
 
   void startGame() {
     removeAll(gameData.enemies.value);
     gameData.enemies.value = gameData.generateRandomEnemies();
-    gameData.enemies.value.forEach((element) async {
-      await add(element);
-    });
+    addAll(gameData.enemies.value);
+
     removeAll(gameData.cards.value);
     gameData.cards.value = gameData.generateRandomCards();
-    gameData.cards.value.forEach((element) async {
-      await add(element);
-    });
+    addAll(gameData.cards.value);
+
+    removeAll(gameData.hearts.value);
+    gameData.hearts.value = gameData.fullHealth();
+    addAll(gameData.hearts.value);
   }
 
   Enemy getRandomEnemy() {
-    Enemy enemy = gameData.enemies.value[random.nextInt(3)];
+    Enemy enemy = gameData.enemies.value[Random().nextInt(3)];
     if (enemy.health <= 0) {
       return getRandomEnemy();
     } else {
@@ -82,42 +89,30 @@ class WitchyGame extends FlameGame with HasTappables {
 
   void physicAttack() async {
     final Enemy enemy = getRandomEnemy();
-    int minDamage = playerData.meleeMinDamage.value;
-    int maxDamage = playerData.meleeMaxDamage.value;
-    int damage = minDamage + random.nextInt(maxDamage - minDamage);
+    final int minDamage = playerData.meleeMinDamage.value;
+    final int maxDamage = playerData.meleeMaxDamage.value;
+    final int damage = minDamage + Random().nextInt(maxDamage - minDamage);
     _player.meleeAttack(enemy, damage);
   }
 
   void magicAttack() async {
     final Enemy enemy = getRandomEnemy();
-    int minDamage = playerData.magicMinDamage.value;
-    int maxDamage = playerData.magicMaxDamage.value;
-    int damage = minDamage + random.nextInt(maxDamage - minDamage);
+    final int minDamage = playerData.magicMinDamage.value;
+    final int maxDamage = playerData.magicMaxDamage.value;
+    final int damage = minDamage + Random().nextInt(maxDamage - minDamage);
     _player.magicAttack(enemy, damage);
   }
 
-  void activeActions() {
-    if (actionsActive == false) {
-      _actionButton.selectThis();
-      _upgradeButton.unselectThis();
-      remove(_upgradeDisplay);
-      add(_cardDisplay);
-      gameData.cards.value.forEach((element) async {
-        await add(element);
-      });
-      actionsActive = true;
-    }
+  void enemyAttack() {
+    final Enemy enemy = getRandomEnemy();
+    enemy.attackPlayer();
   }
 
-  void activeUpgrades() {
-    if (actionsActive == true) {
-      _upgradeButton.selectThis();
-      _actionButton.unselectThis();
-      add(_upgradeDisplay);
-      remove(_cardDisplay);
-      removeAll(gameData.cards.value);
-      actionsActive = false;
+  void healing() {
+    if (playerData.health.value < 12) {
+      playerData.health.value += playerData.healingPower.value;
     }
+    playerTurn = false;
   }
 
   void updateCards(row) async {
@@ -125,86 +120,43 @@ class WitchyGame extends FlameGame with HasTappables {
     gameData.replaceCard(row);
     await add(gameData.cards.value[row]);
   }
-}
 
-class ActionButton extends SpriteComponent
-    with HasGameRef<WitchyGame>, Tappable {
-  late final Sprite pressed;
-  late final Sprite unpressed;
-
-  @override
-  Future<void>? onLoad() async {
-    pressed = await gameRef.loadSprite('buttons/actions_button_pressed.png');
-    unpressed =
-        await gameRef.loadSprite('buttons/actions_button_unpressed.png');
-    sprite = pressed;
-    size = Vector2(gameRef.size.x / 2, 50);
-    position = Vector2(0, gameRef.size.y - (gameRef.size.x / 2) - 50);
-    return super.onLoad();
-  }
-
-  @override
-  bool onTapDown(TapDownInfo info) {
-    gameRef.activeActions();
-    return false;
-  }
-
-  void selectThis() {
-    sprite = pressed;
-  }
-
-  void unselectThis() {
-    sprite = unpressed;
+  void updateHealthContainer(health) {
+    removeAll(gameData.hearts.value);
+    gameData.updateHealth(health);
+    addAll(gameData.hearts.value);
   }
 }
 
-class UpgradeButton extends SpriteComponent
-    with HasGameRef<WitchyGame>, Tappable {
-  late final Sprite pressed;
-  late final Sprite unpressed;
-
-  @override
-  Future<void>? onLoad() async {
-    pressed = await gameRef.loadSprite('buttons/upgrades_button_pressed.png');
-    unpressed =
-        await gameRef.loadSprite('buttons/upgrades_button_unpressed.png');
-    sprite = unpressed;
-    size = Vector2(gameRef.size.x / 2, 50);
-    position =
-        Vector2(gameRef.size.x / 2, gameRef.size.y - (gameRef.size.x / 2) - 50);
-    return super.onLoad();
-  }
-
-  @override
-  bool onTapDown(TapDownInfo info) {
-    gameRef.activeUpgrades();
-    return false;
-  }
-
-  void selectThis() {
-    sprite = pressed;
-  }
-
-  void unselectThis() {
-    sprite = unpressed;
-  }
-}
-
-class UpgradesDisplay extends PositionComponent with HasGameRef<WitchyGame> {
-  UpgradesDisplay({super.priority});
-
+class CoinLabel extends TextComponent with HasGameRef<WitchyGame> {
   @override
   Future<void>? onLoad() {
-    position = Vector2(0.0, gameRef.size[1] - (gameRef.size[0] / 2.0));
-    size = Vector2(gameRef.size[0], gameRef.size[0] / 2.0);
+    text = '0';
+    textRenderer = TextPaint(
+        style: GoogleFonts.getFont(
+      'Press Start 2P',
+      fontSize: 32,
+      color: Colors.black,
+    ));
+    size = Vector2.all(32);
+    position = Vector2(gameRef.size.x - 65, 20);
+    anchor = Anchor.topRight;
     return super.onLoad();
   }
 
   @override
-  void render(Canvas canvas) {
-    super.render(canvas);
+  void update(double dt) {
+    text = gameRef.playerData.coins.value.toString();
+    super.update(dt);
+  }
+}
 
-    canvas.drawRect(size.toRect(),
-        Paint()..color = const Color.fromARGB(255, 140, 170, 222));
+class CoinIcon extends SpriteComponent with HasGameRef {
+  @override
+  Future<void>? onLoad() async {
+    sprite = await gameRef.loadSprite('collectables/coin.png');
+    position = Vector2(gameRef.size.x - 69, 5);
+    size = Vector2.all(64);
+    return super.onLoad();
   }
 }

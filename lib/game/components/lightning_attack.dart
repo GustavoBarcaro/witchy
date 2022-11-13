@@ -4,7 +4,7 @@ import 'package:flame/sprite.dart';
 class LightningAttack extends SpriteAnimationComponent with HasGameRef {
   late final SpriteAnimation _idleAnimation;
 
-  final double _animationSpeed = .10;
+  final double _animationSpeed = .05;
 
   LightningAttack({super.position});
 
