@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:witchy/game.dart';
+import 'package:witchy/game/screens/game_play.dart';
 
 class MainMenu extends StatelessWidget {
   static const id = 'MainMenu';
@@ -37,8 +38,11 @@ class MainMenu extends StatelessWidget {
               height: 75,
               child: ElevatedButton(
                   onPressed: () {
-                    gameRef.overlays.remove(id);
-                    gameRef.add(WitchyGame());
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => const GamePlay(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 90, 187, 88),

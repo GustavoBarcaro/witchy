@@ -1,5 +1,4 @@
 import 'package:flame/flame.dart';
-import 'package:flame/game.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,20 +21,8 @@ void main() async {
     debugShowCheckedModeBanner: false,
     title: 'Witchy',
     home: Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          SafeArea(
-            child: GameWidget<WitchyGame>(
-              game: game,
-              overlayBuilderMap: {
-                MainMenu.id: ((context, game) => MainMenu(gameRef: game))
-              },
-              initialActiveOverlays: const [MainMenu.id],
-            ),
-          ),
-        ],
-      ),
-    ),
+        body: MainMenu(
+      gameRef: game,
+    )),
   ));
 }

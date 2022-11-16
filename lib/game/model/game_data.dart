@@ -45,9 +45,9 @@ class GameData {
   int generateCard() {
     final random = Random();
     int result = random.nextInt(1000);
-    if (result <= 450) {
+    if (result <= 500) {
       return 0;
-    } else if (result <= 800) {
+    } else if (result <= 850) {
       return 1;
     } else {
       return 2;
@@ -127,5 +127,11 @@ class GameData {
         hearts.value[2] = HeartContainer(type: 0, rowNumber: 2);
         break;
     }
+  }
+
+  void reset() {
+    enemies.value = [];
+    cards.value = [];
+    hearts.value = [];
   }
 }

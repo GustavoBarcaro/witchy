@@ -2,24 +2,22 @@
 
 import 'dart:math';
 
-import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flutter/material.dart';
-
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:witchy/game/actors/enemy.dart';
 import 'package:witchy/game/actors/player.dart';
 
+import 'package:witchy/game/components/coin_hud.dart';
+
 import 'package:witchy/game/model/player_data.dart';
 import 'package:witchy/game/model/game_data.dart';
+
+import 'package:witchy/game/overlays/game_over_menu.dart';
 
 import 'package:witchy/game/screens/background.dart';
 import 'package:witchy/game/screens/card_display.dart';
 
 class WitchyGame extends FlameGame with HasTappables {
-  static const id = 'MainGame';
-
   final Background _background = Background();
   final CardsDisplay _cardDisplay = CardsDisplay();
 
@@ -34,19 +32,26 @@ class WitchyGame extends FlameGame with HasTappables {
   bool playerTurn = true;
   bool enemyTurn = false;
 
+  bool _isAlreadyLoaded = false;
+
   @override
   Future<void> onLoad() async {
-    super.onLoad();
-    await add(_background);
-    await add(_cardDisplay);
-    await add(_player);
-    await add(_coinIcon);
-    await add(_coinLabel);
-    startGame();
+    if (_isAlreadyLoaded == false) {
+      await add(_background);
+      await add(_cardDisplay);
+      await add(_player);
+      await add(_coinIcon);
+      await add(_coinLabel);
+      startGame();
 
-    playerData.health.addListener(() {
-      updateHealthContainer(playerData.health.value);
-    });
+      playerData.health.addListener(() {
+        updateHealthContainer(playerData.health.value);
+      });
+
+      _isAlreadyLoaded = true;
+    }
+
+    super.onLoad();
   }
 
   @override
@@ -61,6 +66,14 @@ class WitchyGame extends FlameGame with HasTappables {
         enemyAttack();
       }
     }
+
+    if (fainted == 3) respawnEnemies();
+
+    if (playerData.health.value <= 0) {
+      pauseEngine();
+      overlays.add(GameOverMenu.id);
+    }
+
     super.update(dt);
   }
 
@@ -126,37 +139,16 @@ class WitchyGame extends FlameGame with HasTappables {
     gameData.updateHealth(health);
     addAll(gameData.hearts.value);
   }
-}
 
-class CoinLabel extends TextComponent with HasGameRef<WitchyGame> {
-  @override
-  Future<void>? onLoad() {
-    text = '0';
-    textRenderer = TextPaint(
-        style: GoogleFonts.getFont(
-      'Press Start 2P',
-      fontSize: 32,
-      color: Colors.black,
-    ));
-    size = Vector2.all(32);
-    position = Vector2(gameRef.size.x - 65, 20);
-    anchor = Anchor.topRight;
-    return super.onLoad();
+  void respawnEnemies() {
+    playerTurn = true;
+    enemyTurn = false;
+    gameData.enemies.value = gameData.generateRandomEnemies();
+    addAll(gameData.enemies.value);
   }
 
-  @override
-  void update(double dt) {
-    text = gameRef.playerData.coins.value.toString();
-    super.update(dt);
-  }
-}
-
-class CoinIcon extends SpriteComponent with HasGameRef {
-  @override
-  Future<void>? onLoad() async {
-    sprite = await gameRef.loadSprite('collectables/coin.png');
-    position = Vector2(gameRef.size.x - 69, 5);
-    size = Vector2.all(64);
-    return super.onLoad();
+  void reset() {
+    playerData.reset();
+    gameData.reset();
   }
 }

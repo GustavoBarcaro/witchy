@@ -34,8 +34,10 @@ class PauseMenu extends StatelessWidget {
               child: ElevatedButton(
                   onPressed: () {
                     gameRef.overlays.remove(id);
+                    gameRef.reset();
                     gameRef.resumeEngine();
-                    gameRef.overlays.add(MainMenu.id);
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => MainMenu(gameRef: gameRef)));
                   },
                   child: const Text(
                     'Exit',
