@@ -17,6 +17,8 @@ import 'package:witchy/game/overlays/game_over_menu.dart';
 import 'package:witchy/game/screens/background.dart';
 import 'package:witchy/game/screens/card_display.dart';
 
+import 'game/components/eye_attack.dart';
+
 class WitchyGame extends FlameGame with HasTappables {
   final Background _background = Background();
   final CardsDisplay _cardDisplay = CardsDisplay();
@@ -30,6 +32,7 @@ class WitchyGame extends FlameGame with HasTappables {
   final gameData = GameData();
 
   bool playerTurn = true;
+  bool playerAttacking = false;
   bool enemyTurn = false;
 
   bool _isAlreadyLoaded = false;
@@ -42,15 +45,12 @@ class WitchyGame extends FlameGame with HasTappables {
       await add(_player);
       await add(_coinIcon);
       await add(_coinLabel);
-      startGame();
-
-      playerData.health.addListener(() {
-        updateHealthContainer(playerData.health.value);
-      });
-
       _isAlreadyLoaded = true;
     }
-
+    startGame();
+    playerData.health.addListener(() {
+      updateHealthContainer(playerData.health.value);
+    });
     super.onLoad();
   }
 
@@ -78,15 +78,12 @@ class WitchyGame extends FlameGame with HasTappables {
   }
 
   void startGame() {
-    removeAll(gameData.enemies.value);
     gameData.enemies.value = gameData.generateRandomEnemies();
     addAll(gameData.enemies.value);
 
-    removeAll(gameData.cards.value);
     gameData.cards.value = gameData.generateRandomCards();
     addAll(gameData.cards.value);
 
-    removeAll(gameData.hearts.value);
     gameData.hearts.value = gameData.fullHealth();
     addAll(gameData.hearts.value);
   }
@@ -147,8 +144,39 @@ class WitchyGame extends FlameGame with HasTappables {
     addAll(gameData.enemies.value);
   }
 
-  void reset() {
-    playerData.reset();
-    gameData.reset();
+  void resetGameData() {
+    gameData.enemies.value = gameData.generateRandomEnemies();
+    gameData.cards.value = gameData.generateRandomCards();
+    gameData.hearts.value = gameData.fullHealth();
   }
+
+  void resetPlayerData() {
+    playerData.isPlayerTurn.value = true;
+    playerData.health.value = 12;
+    playerData.coins.value = 0;
+    playerData.meleeMinDamage.value = 3;
+    playerData.meleeMaxDamage.value = 4;
+    playerData.magicMinDamage.value = 1;
+    playerData.magicMaxDamage.value = 6;
+    playerData.healingPower.value = 2;
+  }
+
+  void reset() {
+    gameData.enemies.value.forEach(((element) {
+      if (element.health > 0) remove(element);
+    }));
+    removeAll(gameData.cards.value);
+    removeAll(gameData.hearts.value);
+    resetPlayerData();
+    resetGameData();
+    addAll(gameData.enemies.value);
+    addAll(gameData.cards.value);
+    addAll(gameData.hearts.value);
+  }
+
+  void activeEyeLaser(Vector2 position) {
+    add(EyeAttack()..position = Vector2(position.x, position.y + 16));
+  }
+
+  Vector2 getPlayerPosition() => _player.position;
 }

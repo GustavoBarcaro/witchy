@@ -128,10 +128,4 @@ class GameData {
         break;
     }
   }
-
-  void reset() {
-    enemies.value = [];
-    cards.value = [];
-    hearts.value = [];
-  }
 }

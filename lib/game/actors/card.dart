@@ -76,7 +76,9 @@ class Card extends SpriteAnimationComponent
       if (element.health <= 0) fainted++;
     });
     if (fainted == 3) return false;
-    if (gameRef.playerTurn == false || gameRef.enemyTurn == true) {
+    if (gameRef.playerTurn == false ||
+        gameRef.enemyTurn == true ||
+        gameRef.playerAttacking == true) {
       return false;
     }
 

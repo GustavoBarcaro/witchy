@@ -68,6 +68,7 @@ class Player extends SpriteAnimationComponent with HasGameRef<WitchyGame> {
   void meleeAttack(Enemy enemy, int damage) async {
     final originalPosition = Vector2(16.0, gameRef.size[1] / 2.0 - 96.0);
 
+    gameRef.playerAttacking = true;
     size = Vector2.all(172);
     priority = 1;
     anchor = Anchor.center;
@@ -80,10 +81,12 @@ class Player extends SpriteAnimationComponent with HasGameRef<WitchyGame> {
       playIdleAnimation();
       enemy.health -= damage;
       gameRef.playerTurn = false;
+      gameRef.playerAttacking = false;
     });
   }
 
   void magicAttack(Enemy enemy, int damage) async {
+    gameRef.playerAttacking = true;
     size = Vector2.all(160);
     playMagicAnimation();
     await Future.delayed(const Duration(milliseconds: 800), () {
@@ -96,6 +99,7 @@ class Player extends SpriteAnimationComponent with HasGameRef<WitchyGame> {
       playIdleAnimation();
       enemy.health -= damage;
       gameRef.playerTurn = false;
+      gameRef.playerAttacking = false;
     });
   }
 }

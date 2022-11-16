@@ -150,6 +150,9 @@ class Enemy extends SpriteAnimationComponent
 
   void attackPlayer() async {
     playAttackAnimation();
+    if (type == 1) {
+      gameRef.activeEyeLaser(position);
+    }
     await Future.delayed(const Duration(milliseconds: 800), () {
       gameRef.playerData.health.value -= 1;
       gameRef.playerTurn = true;

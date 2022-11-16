@@ -13,15 +13,4 @@ class PlayerData {
   final magicMaxDamage = ValueNotifier<int>(6);
 
   final healingPower = ValueNotifier<int>(2);
-
-  void reset() {
-    isPlayerTurn.value = true;
-    health.value = 12;
-    coins.value = 0;
-    meleeMinDamage.value = 3;
-    meleeMaxDamage.value = 4;
-    magicMinDamage.value = 1;
-    magicMaxDamage.value = 6;
-    healingPower.value = 2;
-  }
 }
