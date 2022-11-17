@@ -130,6 +130,12 @@ class Enemy extends SpriteAnimationComponent
   }
 
   @override
+  bool onTapDown(info) {
+    gameRef.changeTarget(this);
+    return false;
+  }
+
+  @override
   void render(Canvas canvas) {
     canvas.drawRect(
         Rect.fromLTWH(size.x - 64, size.y + 10, health.toDouble() * 6.4, 10),
@@ -139,7 +145,7 @@ class Enemy extends SpriteAnimationComponent
 
   @override
   void onRemove() {
-    gameRef.playerData.coins.value += 5;
+    gameRef.playerData.coins.value += 1;
     super.onRemove();
   }
 

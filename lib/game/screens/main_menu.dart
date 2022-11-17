@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:witchy/game.dart';
 import 'package:witchy/game/screens/game_play.dart';
 
 class MainMenu extends StatelessWidget {
-  static const id = 'MainMenu';
-  final WitchyGame gameRef;
-
-  const MainMenu({super.key, required this.gameRef});
+  const MainMenu({super.key});
 
   @override
   Widget build(BuildContext context) {

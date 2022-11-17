@@ -82,6 +82,8 @@ class Card extends SpriteAnimationComponent
       return false;
     }
 
+    if (gameRef.target == null && type != 2) return false;
+
     switch (type) {
       case 0:
         gameRef.physicAttack();

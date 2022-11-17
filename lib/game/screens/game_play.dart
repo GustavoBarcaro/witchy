@@ -19,7 +19,6 @@ class GamePlay extends StatelessWidget {
             game: _witchyGame,
             overlayBuilderMap: {
               GameOverMenu.id: ((context, game) => GameOverMenu(gameRef: game)),
-              MainMenu.id: ((context, game) => MainMenu(gameRef: game)),
             },
           ),
         ),

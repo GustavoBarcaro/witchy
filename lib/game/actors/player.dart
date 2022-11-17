@@ -65,7 +65,7 @@ class Player extends SpriteAnimationComponent with HasGameRef<WitchyGame> {
     animation = _magicAnimation;
   }
 
-  void meleeAttack(Enemy enemy, int damage) async {
+  void meleeAttack(Enemy enemy, int damage) {
     final originalPosition = Vector2(16.0, gameRef.size[1] / 2.0 - 96.0);
 
     gameRef.playerAttacking = true;
@@ -74,7 +74,7 @@ class Player extends SpriteAnimationComponent with HasGameRef<WitchyGame> {
     anchor = Anchor.center;
     position = Vector2(enemy.position.x - enemy.size.x / 2, enemy.position.y);
     playMeleeAnimation();
-    await Future.delayed(const Duration(milliseconds: 800), () {
+    Future.delayed(const Duration(milliseconds: 800), () {
       size = Vector2.all(128);
       position = originalPosition;
       anchor = Anchor.topLeft;
@@ -82,24 +82,30 @@ class Player extends SpriteAnimationComponent with HasGameRef<WitchyGame> {
       enemy.health -= damage;
       gameRef.playerTurn = false;
       gameRef.playerAttacking = false;
+      if (enemy.health <= 0) {
+        gameRef.removeTarget();
+      }
     });
   }
 
-  void magicAttack(Enemy enemy, int damage) async {
+  void magicAttack(Enemy enemy, int damage) {
     gameRef.playerAttacking = true;
     size = Vector2.all(160);
     playMagicAnimation();
-    await Future.delayed(const Duration(milliseconds: 800), () {
+    Future.delayed(const Duration(milliseconds: 800), () {
       gameRef.add(LightningAttack(
           position:
               Vector2(enemy.position.x, enemy.position.y - enemy.size.y)));
     });
-    await Future.delayed(const Duration(milliseconds: 800), () {
+    Future.delayed(const Duration(milliseconds: 800), () {
       size = Vector2.all(128);
       playIdleAnimation();
       enemy.health -= damage;
       gameRef.playerTurn = false;
       gameRef.playerAttacking = false;
+      if (enemy.health <= 0) {
+        gameRef.removeTarget();
+      }
     });
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:witchy/game.dart';
+import 'package:witchy/game/screens/main_menu.dart';
 
 class GameOverMenu extends StatelessWidget {
   static const id = 'GameOverMenu';

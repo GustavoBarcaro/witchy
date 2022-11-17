@@ -8,6 +8,7 @@ import 'package:witchy/game/actors/enemy.dart';
 import 'package:witchy/game/actors/player.dart';
 
 import 'package:witchy/game/components/coin_hud.dart';
+import 'package:witchy/game/components/target.dart';
 
 import 'package:witchy/game/model/player_data.dart';
 import 'package:witchy/game/model/game_data.dart';
@@ -35,18 +36,15 @@ class WitchyGame extends FlameGame with HasTappables {
   bool playerAttacking = false;
   bool enemyTurn = false;
 
-  bool _isAlreadyLoaded = false;
+  Target? target;
 
   @override
   Future<void> onLoad() async {
-    if (_isAlreadyLoaded == false) {
-      await add(_background);
-      await add(_cardDisplay);
-      await add(_player);
-      await add(_coinIcon);
-      await add(_coinLabel);
-      _isAlreadyLoaded = true;
-    }
+    await add(_background);
+    await add(_cardDisplay);
+    await add(_player);
+    await add(_coinIcon);
+    await add(_coinLabel);
     startGame();
     playerData.health.addListener(() {
       updateHealthContainer(playerData.health.value);
@@ -98,19 +96,19 @@ class WitchyGame extends FlameGame with HasTappables {
   }
 
   void physicAttack() async {
-    final Enemy enemy = getRandomEnemy();
     final int minDamage = playerData.meleeMinDamage.value;
     final int maxDamage = playerData.meleeMaxDamage.value;
     final int damage = minDamage + Random().nextInt(maxDamage - minDamage);
-    _player.meleeAttack(enemy, damage);
+    final Enemy? enemy = target?.enemy;
+    _player.meleeAttack(enemy!, damage);
   }
 
   void magicAttack() async {
-    final Enemy enemy = getRandomEnemy();
     final int minDamage = playerData.magicMinDamage.value;
     final int maxDamage = playerData.magicMaxDamage.value;
     final int damage = minDamage + Random().nextInt(maxDamage - minDamage);
-    _player.magicAttack(enemy, damage);
+    final Enemy? enemy = target?.enemy;
+    _player.magicAttack(enemy!, damage);
   }
 
   void enemyAttack() {
@@ -137,6 +135,19 @@ class WitchyGame extends FlameGame with HasTappables {
     addAll(gameData.hearts.value);
   }
 
+  void removeTarget() {
+    if (target != null) {
+      remove(target!);
+    }
+    target = null;
+  }
+
+  void changeTarget(Enemy enemy) {
+    removeTarget();
+    target = Target(enemy: enemy);
+    add(target!);
+  }
+
   void respawnEnemies() {
     playerTurn = true;
     enemyTurn = false;
@@ -145,9 +156,9 @@ class WitchyGame extends FlameGame with HasTappables {
   }
 
   void resetGameData() {
-    gameData.enemies.value = gameData.generateRandomEnemies();
-    gameData.cards.value = gameData.generateRandomCards();
-    gameData.hearts.value = gameData.fullHealth();
+    gameData.enemies.value = [];
+    gameData.cards.value = [];
+    gameData.hearts.value = [];
   }
 
   void resetPlayerData() {
@@ -165,13 +176,12 @@ class WitchyGame extends FlameGame with HasTappables {
     gameData.enemies.value.forEach(((element) {
       if (element.health > 0) remove(element);
     }));
+    removeTarget();
     removeAll(gameData.cards.value);
     removeAll(gameData.hearts.value);
     resetPlayerData();
     resetGameData();
-    addAll(gameData.enemies.value);
-    addAll(gameData.cards.value);
-    addAll(gameData.hearts.value);
+    startGame();
   }
 
   void activeEyeLaser(Vector2 position) {
