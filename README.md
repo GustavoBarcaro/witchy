@@ -12,7 +12,7 @@ Gustavo Brandão Silva
 Gustavo da Silva Barcaro
 002201902446
 
-Guilherme Souza Ribeiro
+Guilherme de Souza Ribeiro
 002201902439
 
 Vinícius Fascina Bredariol
