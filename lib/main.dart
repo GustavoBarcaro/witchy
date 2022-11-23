@@ -5,8 +5,6 @@ import 'package:flutter/services.dart';
 
 import 'package:witchy/game/screens/main_menu.dart';
 
-const spriteSize = 64.0;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
@@ -14,7 +12,7 @@ void main() async {
   Flame.device.fullScreen();
   Flame.device.setPortraitUpOnly();
 
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Witchy',
     home: Scaffold(body: MainMenu()),

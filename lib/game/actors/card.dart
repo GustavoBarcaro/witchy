@@ -72,7 +72,7 @@ class Card extends SpriteAnimationComponent
   @override
   bool onTapDown(info) {
     int fainted = 0;
-    gameRef.gameData.enemies.value.forEach((element) {
+    gameRef.gameData.enemies.forEach((element) {
       if (element.health <= 0) fainted++;
     });
     if (fainted == 3) return false;

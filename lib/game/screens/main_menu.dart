@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:google_fonts/google_fonts.dart';
-
 import 'package:witchy/game/screens/game_play.dart';
 
 class MainMenu extends StatelessWidget {
@@ -15,14 +13,14 @@ class MainMenu extends StatelessWidget {
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('WITCHY',
+          const Text('WITCHY',
               textAlign: TextAlign.center,
-              style: GoogleFonts.getFont(
-                'Press Start 2P',
+              style: TextStyle(
+                fontFamily: 'Press Start 2P',
                 fontSize: 50,
-                color: const Color.fromARGB(255, 37, 37, 37),
+                color: Color.fromARGB(255, 37, 37, 37),
                 shadows: <Shadow>[
-                  const Shadow(
+                  Shadow(
                       blurRadius: 30.0,
                       color: Colors.white,
                       offset: Offset(0, 0)),
@@ -46,10 +44,10 @@ class MainMenu extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                   ),
-                  child: Text('START GAME',
+                  child: const Text('START GAME',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.getFont(
-                        'Press Start 2P',
+                      style: TextStyle(
+                        fontFamily: 'Press Start 2P',
                         fontSize: 24,
                       )))),
           const SizedBox(height: 20),
@@ -64,10 +62,10 @@ class MainMenu extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15.0),
                     ),
                   ),
-                  child: Text('CREDITS',
+                  child: const Text('CREDITS',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.getFont(
-                        'Press Start 2P',
+                      style: TextStyle(
+                        fontFamily: 'Press Start 2P',
                         fontSize: 24,
                         color: Colors.black,
                       )))),

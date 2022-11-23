@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flame/components.dart';
 
-import 'package:google_fonts/google_fonts.dart';
-
 import 'package:witchy/game.dart';
 
 class CoinLabel extends TextComponent with HasGameRef<WitchyGame> {
@@ -11,8 +9,8 @@ class CoinLabel extends TextComponent with HasGameRef<WitchyGame> {
   Future<void>? onLoad() {
     text = '0';
     textRenderer = TextPaint(
-        style: GoogleFonts.getFont(
-      'Press Start 2P',
+        style: const TextStyle(
+      fontFamily: 'Press Start 2P',
       fontSize: 32,
       color: Colors.black,
     ));

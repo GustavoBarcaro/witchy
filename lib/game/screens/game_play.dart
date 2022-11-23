@@ -2,7 +2,6 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:witchy/game.dart';
 import 'package:witchy/game/overlays/game_over_menu.dart';
-import 'package:witchy/game/screens/main_menu.dart';
 
 WitchyGame _witchyGame = WitchyGame();
 

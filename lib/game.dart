@@ -46,16 +46,13 @@ class WitchyGame extends FlameGame with HasTappables {
     await add(_coinIcon);
     await add(_coinLabel);
     startGame();
-    playerData.health.addListener(() {
-      updateHealthContainer(playerData.health.value);
-    });
     super.onLoad();
   }
 
   @override
   void update(double dt) {
     int fainted = 0;
-    gameData.enemies.value.forEach((element) {
+    gameData.enemies.forEach((element) {
       if (element.health <= 0) fainted++;
     });
     if (fainted != 3) {
@@ -76,18 +73,26 @@ class WitchyGame extends FlameGame with HasTappables {
   }
 
   void startGame() {
-    gameData.enemies.value = gameData.generateRandomEnemies();
-    addAll(gameData.enemies.value);
+    resetPlayerData();
+    resetGameData();
+    gameData.enemies = gameData.generateRandomEnemies();
+    addAll(gameData.enemies);
 
-    gameData.cards.value = gameData.generateRandomCards();
-    addAll(gameData.cards.value);
+    gameData.cards = gameData.generateRandomCards();
+    addAll(gameData.cards);
 
-    gameData.hearts.value = gameData.fullHealth();
-    addAll(gameData.hearts.value);
+    gameData.hearts = gameData.fullHealth();
+    addAll(gameData.hearts);
+
+    playerData.health.removeListener(() {});
+
+    playerData.health.addListener(() {
+      updateHealthContainer(playerData.health.value);
+    });
   }
 
   Enemy getRandomEnemy() {
-    Enemy enemy = gameData.enemies.value[Random().nextInt(3)];
+    Enemy enemy = gameData.enemies[Random().nextInt(3)];
     if (enemy.health <= 0) {
       return getRandomEnemy();
     } else {
@@ -96,16 +101,16 @@ class WitchyGame extends FlameGame with HasTappables {
   }
 
   void physicAttack() async {
-    final int minDamage = playerData.meleeMinDamage.value;
-    final int maxDamage = playerData.meleeMaxDamage.value;
+    final int minDamage = playerData.meleeMinDamage;
+    final int maxDamage = playerData.meleeMaxDamage;
     final int damage = minDamage + Random().nextInt(maxDamage - minDamage);
     final Enemy? enemy = target?.enemy;
     _player.meleeAttack(enemy!, damage);
   }
 
   void magicAttack() async {
-    final int minDamage = playerData.magicMinDamage.value;
-    final int maxDamage = playerData.magicMaxDamage.value;
+    final int minDamage = playerData.magicMinDamage;
+    final int maxDamage = playerData.magicMaxDamage;
     final int damage = minDamage + Random().nextInt(maxDamage - minDamage);
     final Enemy? enemy = target?.enemy;
     _player.magicAttack(enemy!, damage);
@@ -118,21 +123,21 @@ class WitchyGame extends FlameGame with HasTappables {
 
   void healing() {
     if (playerData.health.value < 12) {
-      playerData.health.value += playerData.healingPower.value;
+      playerData.health.value += playerData.healingPower;
     }
     playerTurn = false;
   }
 
   void updateCards(row) async {
-    remove(gameData.cards.value[row]);
+    remove(gameData.cards[row]);
     gameData.replaceCard(row);
-    await add(gameData.cards.value[row]);
+    await add(gameData.cards[row]);
   }
 
   void updateHealthContainer(health) {
-    removeAll(gameData.hearts.value);
+    removeAll(gameData.hearts);
     gameData.updateHealth(health);
-    addAll(gameData.hearts.value);
+    addAll(gameData.hearts);
   }
 
   void removeTarget() {
@@ -151,34 +156,35 @@ class WitchyGame extends FlameGame with HasTappables {
   void respawnEnemies() {
     playerTurn = true;
     enemyTurn = false;
-    gameData.enemies.value = gameData.generateRandomEnemies();
-    addAll(gameData.enemies.value);
+    gameData.enemies = gameData.generateRandomEnemies();
+    Future.delayed(const Duration(seconds: 1), () {
+      addAll(gameData.enemies);
+    });
   }
 
   void resetGameData() {
-    gameData.enemies.value = [];
-    gameData.cards.value = [];
-    gameData.hearts.value = [];
+    gameData.enemies = [];
+    gameData.cards = [];
+    gameData.hearts = [];
   }
 
   void resetPlayerData() {
-    playerData.isPlayerTurn.value = true;
     playerData.health.value = 12;
     playerData.coins.value = 0;
-    playerData.meleeMinDamage.value = 3;
-    playerData.meleeMaxDamage.value = 4;
-    playerData.magicMinDamage.value = 1;
-    playerData.magicMaxDamage.value = 6;
-    playerData.healingPower.value = 2;
+    playerData.meleeMinDamage = 3;
+    playerData.meleeMaxDamage = 4;
+    playerData.magicMinDamage = 1;
+    playerData.magicMaxDamage = 6;
+    playerData.healingPower = 2;
   }
 
   void reset() {
-    gameData.enemies.value.forEach(((element) {
+    gameData.enemies.forEach(((element) {
       if (element.health > 0) remove(element);
     }));
     removeTarget();
-    removeAll(gameData.cards.value);
-    removeAll(gameData.hearts.value);
+    removeAll(gameData.cards);
+    removeAll(gameData.hearts);
     resetPlayerData();
     resetGameData();
     startGame();
