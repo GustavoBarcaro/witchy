@@ -53,14 +53,14 @@ git clone "https://github.com/GustavoBarcaro/witchy.git"  Nome do Projeto
   ```
   ---
 
-## dependência utilizada  
-- [Google Fonts:  tutorial de instalação da própria documentação do flutter](https://pub.dev/packages/google_fonts)
+## Dependência utilizada  
+
 
 
 - [flame engine: versão 1.3.0 com a documentação](https://docs.flame-engine.org/1.3.0/)
 
 
-- [Cupertino Icons: instalação tutorial nesse link](https://pub.dev/packages/cupertino_icons/install)
+
 
 
 
