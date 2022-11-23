@@ -1,7 +1,7 @@
 # Witchy
 ---
 
-## Integrandes:
+## Integrantes:
 
 Carlos Miguel Bissoni Ribeiro
 202107981
