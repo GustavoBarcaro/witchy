@@ -21,7 +21,7 @@ Vinícius Fascina Bredariol
 ---
    ##  Descrição: 
    
-   ##### Projeto da faculdade Universidade São Francisco  Solicitado pelo professor  José Matias Lemes Filho para aplicar os conhecimentos adquiridos em flutter para  criar um jogo de dispositivos móveis, nosso jogo é um rpg de turno com cartas integradas, feita em uma framework que está iniciando com um grande futuro onde o flutter sendo um   framework de código aberto da google, sendo dart sua linguagem principal utilizada para mobile e web.O flame está em beta e o fórum é bastante  limitado para tirar as dúvidas que surgiram durante o projeto.
+   ##### Projeto da faculdade Universidade São Francisco  Solicitado pelo professor  José Matias Lemes Filho para aplicar os conhecimentos adquiridos em flutter para  criar um jogo de dispositivos móveis, nosso jogo é um rpg de turno com combate baseado em cartas , feita em uma framework que está iniciando com um grande futuro onde o flutter sendo um   framework de código aberto da google, sendo dart sua linguagem principal utilizada para mobile e web.O flame está em beta e o fórum é bastante  limitado para tirar as dúvidas que surgiram durante o projeto.
    
    
    
